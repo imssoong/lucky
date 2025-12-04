@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>로또 번호 생성기</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
 
   <style>
     * {
@@ -15,71 +18,81 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       background: #f2f4f7;
-      color: #111827;
+      color: #1f2933;
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      padding: env(safe-area-inset-top, 0)
+               env(safe-area-inset-right, 0)
+               env(safe-area-inset-bottom, 0)
+               env(safe-area-inset-left, 0);
     }
 
+    /* 어떤 휴대폰이든 화면 폭에 맞게 꽉 차되,
+       너무 넓은 태블릿/PC에서는 가운데 카드만 보이게 */
     .app {
       width: 100%;
-      max-width: 520px;
-      padding: 22px 16px 28px;
+      max-width: 480px;
+      padding: 16px 12px 22px;
     }
 
     .card {
       background: #ffffff;
-      border-radius: 22px;
-      padding: 22px 18px 24px;
-      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+      border-radius: 20px;
+      padding: 16px 14px 18px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      gap: 8px;
     }
 
     .title {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 800;
+      color: #1f2933;
     }
 
     .badge {
-      font-size: 0.9rem;
-      padding: 5px 11px;
+      font-size: 0.85rem;
+      padding: 4px 10px;
       border-radius: 999px;
       background: #eef2ff;
       color: #4f46e5;
       font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .description {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #4b5563;
-      line-height: 1.7;
-      margin-bottom: 18px;
+      line-height: 1.6;
+      margin-bottom: 14px;
     }
 
     .controls {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px; /* 안내문 삭제로 여백 약간 줄임 */
+      gap: 8px;
+      margin-bottom: 8px;
       align-items: center;
     }
 
     .btn-primary {
       flex: 1;
-      padding: 13px 12px;
+      padding: 11px 10px;
       border-radius: 999px;
       border: none;
-      font-size: 1.1rem;
+      font-size: 1.02rem;
       font-weight: 800;
       background: linear-gradient(135deg, #facc15, #fb923c);
-      color: #111827;
-      box-shadow: 0 8px 22px rgba(249, 115, 22, 0.55);
+      color: #1f2933;
+      box-shadow: 0 7px 20px rgba(249, 115, 22, 0.5);
       cursor: pointer;
       transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.12s ease;
       -webkit-tap-highlight-color: transparent;
@@ -92,83 +105,130 @@
     }
 
     .btn-secondary {
-      padding: 12px 16px;
+      padding: 11px 13px;
       border-radius: 999px;
       border: none;
       background: #f3f4f6;
       color: #4b5563;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
     }
 
     .btn-secondary:active {
       background: #e5e7eb;
     }
 
-    /* 세트 전체 간격을 조금 더 넉넉하게 */
     .sets-wrapper {
-      margin-top: 12px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
-      gap: 16px;  /* 12 → 16으로 증가 */
+      gap: 14px;
     }
 
-    /* 세트 한 줄도 padding 늘려서 여유 있게 */
     .set-row {
       display: flex;
-      align-items: center;
-      padding: 12px 12px 13px;  /* 10,10,11 → 12,12,13 */
-      border-radius: 16px;
+      align-items: flex-start;
+      padding: 10px 10px 11px;
+      border-radius: 14px;
       background: #f9fafb;
+      gap: 8px;
     }
 
     .set-label {
-      width: 70px;
-      font-size: 0.95rem;
+      width: 64px;
+      font-size: 0.9rem;
       font-weight: 700;
       color: #6b7280;
+      flex-shrink: 0;
     }
 
     .balls {
       flex: 1;
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;         /* ★ 줄바꿈 허용해서 프레임 밖으로 안 나가게 */
       justify-content: flex-start;
-      gap: 10px;  /* 공 간격 8 → 10으로 살짝 넓힘 */
+      gap: 9px;                /* 공 간격 */
     }
 
     .ball {
       position: relative;
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 1.2rem;
-      color: #0f172a;
-      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(15, 23, 42, 0.25);
+      font-size: 1.1rem;
+      color: #253046;          /* 숫자색 약간 덜 진하게 */
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.35);
+      border: 1px solid rgba(15, 23, 42, 0.22);
+      flex-shrink: 0;
     }
 
-    @media (max-width: 360px) {
+    /* 화면이 좁을수록 자동으로 조금씩 줄어들도록 */
+    @media (max-width: 420px) {
+      .app {
+        padding: 16px 10px 20px;
+      }
       .title {
         font-size: 1.4rem;
       }
-      .ball {
-        width: 42px;
-        height: 42px;
-        font-size: 1.05rem;
+      .description {
+        font-size: 0.9rem;
       }
       .set-label {
         width: 60px;
         font-size: 0.85rem;
       }
-      .btn-primary {
+      .ball {
+        width: 40px;
+        height: 40px;
         font-size: 1rem;
+      }
+      .balls {
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .title {
+        font-size: 1.3rem;
+      }
+      .badge {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+      }
+      .btn-primary {
+        font-size: 0.95rem;
+        padding: 10px 8px;
+      }
+      .btn-secondary {
+        font-size: 0.85rem;
+        padding: 9px 10px;
+      }
+      .set-label {
+        width: 54px;
+        font-size: 0.8rem;
+      }
+      .ball {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+      }
+      .balls {
+        gap: 6px;
+      }
+    }
+
+    /* 큰 화면에서는 카드만 조금 더 넉넉하게 */
+    @media (min-width: 768px) {
+      .app {
+        max-width: 500px;
       }
     }
   </style>
@@ -194,8 +254,6 @@
           초기화
         </button>
       </div>
-
-      <!-- 안내 문구(각 세트는~, 중복 숫자는~, 생성된 번호는~) 전부 제거 -->
 
       <div id="sets-wrapper" class="sets-wrapper">
         <!-- 세트별 번호가 동적으로 들어옵니다 -->
