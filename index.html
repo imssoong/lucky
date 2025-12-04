@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>로또 번호 생성기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: #f2f4f7;
+      color: #111827;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      padding: 22px 16px 28px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 22px 18px 24px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .badge {
+      font-size: 0.9rem;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-weight: 700;
+    }
+
+    .description {
+      font-size: 1rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px; /* 안내문 삭제로 여백 약간 줄임 */
+      align-items: center;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 13px 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #facc15, #fb923c);
+      color: #111827;
+      box-shadow: 0 8px 22px rgba(249, 115, 22, 0.55);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.38);
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-secondary:active {
+      background: #e5e7eb;
+    }
+
+    /* 세트 전체 간격을 조금 더 넉넉하게 */
+    .sets-wrapper {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;  /* 12 → 16으로 증가 */
+    }
+
+    /* 세트 한 줄도 padding 늘려서 여유 있게 */
+    .set-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 12px 13px;  /* 10,10,11 → 12,12,13 */
+      border-radius: 16px;
+      background: #f9fafb;
+    }
+
+    .set-label {
+      width: 70px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #6b7280;
+    }
+
+    .balls {
+      flex: 1;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 10px;  /* 공 간격 8 → 10으로 살짝 넓힘 */
+    }
+
+    .ball {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #0f172a;
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(15, 23, 42, 0.25);
+    }
+
+    @media (max-width: 360px) {
+      .title {
+        font-size: 1.4rem;
+      }
+      .ball {
+        width: 42px;
+        height: 42px;
+        font-size: 1.05rem;
+      }
+      .set-label {
+        width: 60px;
+        font-size: 0.85rem;
+      }
+      .btn-primary {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <div class="header">
+        <div class="title">로또 번호 생성기</div>
+        <div class="badge">5세트 자동 생성</div>
+      </div>
+
+      <p class="description">
+        <strong>아빠</strong>만을 위한 로또 번호 생성기, <strong>꼭 당첨 될거에요!</strong><br />
+        <strong>그래도 너무 많이 구매는 하지 마세요.</strong>
+      </p>
+
+      <div class="controls">
+        <button class="btn-primary" onclick="generateAllSets()">
+          번호 5세트 생성하기
+        </button>
+        <button class="btn-secondary" onclick="resetSets()">
+          초기화
+        </button>
+      </div>
+
+      <!-- 안내 문구(각 세트는~, 중복 숫자는~, 생성된 번호는~) 전부 제거 -->
+
+      <div id="sets-wrapper" class="sets-wrapper">
+        <!-- 세트별 번호가 동적으로 들어옵니다 -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SET_COUNT = 5;        // 한 번에 생성할 세트 수
+    const NUMBER_MIN = 1;       // 시작 번호
+    const NUMBER_MAX = 45;      // 끝 번호
+    const NUMBERS_PER_SET = 6;  // 한 세트당 번호 개수
+
+    // 동행복권 스타일 색상
+    function getBallColor(num) {
+      if (num <= 10)  return "#fbc400"; // 노랑
+      if (num <= 20)  return "#69c8f2"; // 파랑
+      if (num <= 30)  return "#ff7272"; // 빨강
+      if (num <= 40)  return "#aaaaaa"; // 회색
+      return "#b0d840";                 // 초록 (41~45)
+    }
+
+    function generateOneSet() {
+      const pool = [];
+      for (let i = NUMBER_MIN; i <= NUMBER_MAX; i++) {
+        pool.push(i);
+      }
+
+      // Fisher–Yates shuffle
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      return pool.slice(0, NUMBERS_PER_SET).sort((a, b) => a - b);
+    }
+
+    function generateAllSets() {
+      const wrapper = document.getElementById("sets-wrapper");
+      wrapper.innerHTML = "";
+
+      for (let i = 0; i < SET_COUNT; i++) {
+        const numbers = generateOneSet();
+
+        const row = document.createElement("div");
+        row.className = "set-row";
+
+        const label = document.createElement("div");
+        label.className = "set-label";
+        label.textContent = `세트 ${i + 1}`;
+        row.appendChild(label);
+
+        const ballsContainer = document.createElement("div");
+        ballsContainer.className = "balls";
+
+        numbers.forEach((num) => {
+          const ball = document.createElement("div");
+          ball.className = "ball";
+          ball.textContent = num;
+          ball.style.backgroundColor = getBallColor(num);
+          ballsContainer.appendChild(ball);
+        });
+
+        row.appendChild(ballsContainer);
+        wrapper.appendChild(row);
+      }
+    }
+
+    function resetSets() {
+      const wrapper = document.getElementById("sets-wrapper");
+      wrapper.innerHTML = "";
+    }
+
+    // 필요하면 자동 생성
+    // window.addEventListener("load", generateAllSets);
+  </script>
+</body>
+</html>
