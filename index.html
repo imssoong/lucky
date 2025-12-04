@@ -28,12 +28,11 @@
                env(safe-area-inset-left, 0);
     }
 
-    /* 어떤 휴대폰이든 화면 폭에 맞게 꽉 차되,
-       너무 넓은 태블릿/PC에서는 가운데 카드만 보이게 */
+    /* 모바일 폭에 맞게, 아이폰 15 프로(393px) 기준 최적화 */
     .app {
       width: 100%;
-      max-width: 480px;
-      padding: 16px 12px 22px;
+      max-width: 393px;
+      padding: 16px 10px 20px;
     }
 
     .card {
@@ -52,14 +51,14 @@
     }
 
     .title {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: #1f2933;
     }
 
     .badge {
-      font-size: 0.85rem;
-      padding: 4px 10px;
+      font-size: 0.82rem;
+      padding: 4px 9px;
       border-radius: 999px;
       background: #eef2ff;
       color: #4f46e5;
@@ -69,7 +68,7 @@
     }
 
     .description {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       color: #4b5563;
       line-height: 1.6;
       margin-bottom: 14px;
@@ -85,10 +84,10 @@
 
     .btn-primary {
       flex: 1;
-      padding: 11px 10px;
+      padding: 10px 10px;
       border-radius: 999px;
       border: none;
-      font-size: 1.02rem;
+      font-size: 1rem;
       font-weight: 800;
       background: linear-gradient(135deg, #facc15, #fb923c);
       color: #1f2933;
@@ -105,12 +104,12 @@
     }
 
     .btn-secondary {
-      padding: 11px 13px;
+      padding: 10px 12px;
       border-radius: 999px;
       border: none;
       background: #f3f4f6;
       color: #4b5563;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -131,16 +130,17 @@
 
     .set-row {
       display: flex;
-      align-items: flex-start;
-      padding: 10px 10px 11px;
+      align-items: center;
+      padding: 10px 9px;
       border-radius: 14px;
       background: #f9fafb;
-      gap: 8px;
+      gap: 6px;
     }
 
+    /* 라벨 폭을 줄여서 번호 영역을 최대 확보 */
     .set-label {
-      width: 64px;
-      font-size: 0.9rem;
+      width: 56px;
+      font-size: 0.85rem;
       font-weight: 700;
       color: #6b7280;
       flex-shrink: 0;
@@ -149,86 +149,59 @@
     .balls {
       flex: 1;
       display: flex;
-      flex-wrap: wrap;         /* ★ 줄바꿈 허용해서 프레임 밖으로 안 나가게 */
+      flex-wrap: nowrap;       /* ★ 한 줄 고정: 줄바꿈 금지 */
       justify-content: flex-start;
-      gap: 9px;                /* 공 간격 */
+      gap: 6px;                /* 공 사이 간격 줄임 */
+      min-width: 0;
     }
 
     .ball {
       position: relative;
-      width: 44px;
-      height: 44px;
+      width: 40px;             /* 한 줄에 6개 딱 맞게 크기 조정 */
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 1.1rem;
-      color: #253046;          /* 숫자색 약간 덜 진하게 */
-      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.35);
+      font-size: 1rem;
+      color: #253046;
+      box-shadow: 0 3px 6px rgba(15, 23, 42, 0.3);
       border: 1px solid rgba(15, 23, 42, 0.22);
       flex-shrink: 0;
     }
 
-    /* 화면이 좁을수록 자동으로 조금씩 줄어들도록 */
-    @media (max-width: 420px) {
-      .app {
-        padding: 16px 10px 20px;
-      }
-      .title {
-        font-size: 1.4rem;
-      }
-      .description {
-        font-size: 0.9rem;
-      }
-      .set-label {
-        width: 60px;
-        font-size: 0.85rem;
-      }
-      .ball {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-      }
-      .balls {
-        gap: 8px;
-      }
-    }
-
+    /* 폭이 더 작은 기기(아이폰 SE 등)에서는 어쩔 수 없이 줄바꿈 허용 */
     @media (max-width: 360px) {
+      .app {
+        padding: 14px 8px 18px;
+      }
       .title {
-        font-size: 1.3rem;
+        font-size: 1.35rem;
       }
       .badge {
-        font-size: 0.8rem;
-        padding: 3px 8px;
-      }
-      .btn-primary {
-        font-size: 0.95rem;
-        padding: 10px 8px;
-      }
-      .btn-secondary {
-        font-size: 0.85rem;
-        padding: 9px 10px;
+        font-size: 0.78rem;
+        padding: 3px 7px;
       }
       .set-label {
-        width: 54px;
+        width: 52px;
         font-size: 0.8rem;
+      }
+      .balls {
+        flex-wrap: wrap;       /* SE 같은 작은 폭에서는 줄바꿈 허용 */
+        gap: 6px;
       }
       .ball {
         width: 36px;
         height: 36px;
         font-size: 0.95rem;
       }
-      .balls {
-        gap: 6px;
-      }
     }
 
-    /* 큰 화면에서는 카드만 조금 더 넉넉하게 */
+    /* 큰 화면에서는 카드만 조금 넉넉하게 */
     @media (min-width: 768px) {
       .app {
-        max-width: 500px;
+        max-width: 420px;
       }
     }
   </style>
